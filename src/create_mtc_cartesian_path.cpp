@@ -18,22 +18,31 @@ BT::NodeStatus CreateMTCCartesianPath::tick()
   double max_velocity_scaling_factor;
   double max_acceleration_scaling_factor;
   double step_size;
-  double jump_treshold;
   double min_fraction;
+  double precision_translational;
+  double precision_rotational;
+  double precision_max_resolution;
 
   if(!getInput("max_velocity_scaling_factor", max_velocity_scaling_factor) ||
      !getInput("max_acceleration_scaling_factor", max_acceleration_scaling_factor) ||
      !getInput("step_size", step_size) ||
      !getInput("min_fraction", min_fraction) ||
-     !getInput("jump_threshold", jump_treshold))
+     !getInput("precision_translational", precision_translational) ||
+     !getInput("precision_rotational", precision_rotational) ||
+     !getInput("precision_max_resolution", precision_max_resolution))
     return NodeStatus::FAILURE;
+
+  moveit::core::CartesianPrecision precision;
+  precision.translational = precision_translational;
+  precision.rotational = precision_rotational;
+  precision.max_resolution = precision_max_resolution;
 
   //build solver
   auto solver = std::make_shared<moveit::task_constructor::solvers::CartesianPath>();
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
   solver->setStepSize(step_size);
-  solver->setJumpThreshold(jump_treshold);
+  solver->setPrecision(precision);
   solver->setMinFraction(min_fraction);
   // Upcast to base class
   moveit::task_constructor::solvers::PlannerInterfacePtr base_solver = solver;
@@ -49,7 +58,9 @@ BT::PortsList CreateMTCCartesianPath::providedPorts()
     BT::InputPort<double>("max_acceleration_scaling_factor", 0.1, "scale down max acceleration by this factor"),
     BT::InputPort<double>("step_size", 0.01, "step size between consecutive waypoints"),
     BT::InputPort<double>("min_fraction", 1.0, "fraction of motion required for success"),
-    BT::InputPort<double>("jump_threshold", 1.5, "acceptable fraction of mean joint motion per step"),
+    BT::InputPort<double>("precision_translational", 0.001, "max deviation in translation (meters)"),
+    BT::InputPort<double>("precision_rotational", 0.01, "max deviation in rotation (radians)"),
+    BT::InputPort<double>("precision_max_resolution", 1e-5, "max resolution for waypoints (fraction of total path)"),
     BT::OutputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>("solver", "{solver}", "Planner interface using pipeline motion solver"),
   };
 }
