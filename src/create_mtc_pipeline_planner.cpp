@@ -42,8 +42,7 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
      !getInput("num_planning_attempts", num_planning_attemps))
     return NodeStatus::FAILURE;
   //build solver
-  auto solver = std::make_shared<moveit::task_constructor::solvers::PipelinePlanner>(node_, pipeline_id);
-  solver->setPlannerId(pipeline_id, planner_id);
+  auto solver = std::make_shared<moveit::task_constructor::solvers::PipelinePlanner>(node_, pipeline_id, planner_id);
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
   solver->setProperty("goal_joint_tolerance", goal_joint_tolerance);
