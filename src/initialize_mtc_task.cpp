@@ -13,8 +13,14 @@ InitializeMTCTask::InitializeMTCTask(const std::string& name,
 
 BT::NodeStatus InitializeMTCTask::tick()
 {
+  std::string task_name;
+
+  if(!getInput("task_name", task_name))
+    return NodeStatus::FAILURE;
+
   auto task = std::make_shared<moveit::task_constructor::Task>();
   task->loadRobotModel(node_);
+  task->setName(task_name);
 
   setOutput("task", task);
 
@@ -26,6 +32,7 @@ BT::PortsList InitializeMTCTask::providedPorts()
   return {
     BT::OutputPort<moveit::task_constructor::TaskPtr>("task", "{mtc_task}",
                                                       "MoveIt Task Constructor task."),
+    BT::InputPort<std::string>("task_name", "task pipeline", "MoveIt Task Constructor task name.")
   };
 }
 
