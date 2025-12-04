@@ -32,7 +32,7 @@ std::unique_ptr<T> convertSharedToUniqueLocked(BT::AnyPtrLocked& any_locked_ptr)
 
     // Is this really necessary ?
     // set blackboard value to nullptr
-    any_locked_ptr.assign(nullptr);
+    // any_locked_ptr.assign(nullptr);
 
     return unique_t;
   }

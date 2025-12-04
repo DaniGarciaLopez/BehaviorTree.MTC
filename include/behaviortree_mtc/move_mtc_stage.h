@@ -31,7 +31,7 @@ public:
         auto& stage = *stage_ptr;
 
         unique_child = sharedToUnique(stage);
-        any_child_ptr.assign(nullptr);  // set blackboard value to nullptr
+        // any_child_ptr.assign(nullptr);  // set blackboard value to nullptr
       }
     }
 
